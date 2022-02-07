@@ -1,2 +1,1 @@
-# classproject
-classwork
+# dj_project
