@@ -1,19 +1,43 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import (
+    User,
+)
+from django.core.exceptions import (
+    ValidationError,
+)
+
+
+class Group(models.Model):
+    NAME_MAX_LENGTH = 10
+
+    name = models.CharField(
+        verbose_name='имя',
+        max_length=NAME_MAX_LENGTH
+    )
+
+    def __str__(self) -> str:
+        return f'Группа: {self.name}'
+
+    class Meta:
+        ordering = (
+            'name',
+        )
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
 
 class Account(models.Model):
-
-    ACCOUNT_FULL_NAME_MAX_LENGTH = 20
+    FULL_NAME_MAX_LENGTH = 20
 
     user = models.OneToOneField(
         User,
+        verbose_name='пользователь',
         on_delete=models.CASCADE
     )
     full_name = models.CharField(
-        max_length=ACCOUNT_FULL_NAME_MAX_LENGTH
+        verbose_name='полное имя',
+        max_length=FULL_NAME_MAX_LENGTH
     )
     description = models.TextField()
 
@@ -27,63 +51,110 @@ class Account(models.Model):
         verbose_name = 'Аккаунт'
         verbose_name_plural = 'Аккаунты'
 
-class Group(models.Model):
-
-    GROUP_NAME_MAX_LENGTH = 10
-
-    name = models.CharField(
-        max_length = GROUP_NAME_MAX_LENGTH,
-    )
-
-    class Meta:
-        ordering = (
-            'name',
-        )
-        verbose_name = 'Group'
-        verbose_name_plural = 'Groups'
 
 class Student(models.Model):
     MAX_AGE = 27
 
     account = models.OneToOneField(
         Account,
-        verbose_name = 'Аккаунт',
-        on_delete = models.CASCADE
-    )
-    age = models.IntegerField(
-        verbose_name = 'возраст студента',
+        verbose_name='аккаунт',
+        on_delete=models.CASCADE
     )
     group = models.ForeignKey(
         Group,
-        verbose_name = 'группа',
-        on_delete = models.PROTECT
+        verbose_name='группа',
+        on_delete=models.PROTECT
     )
-    GPA = models.FloatField(
-       verbose_name = 'Среднее значение GPA',
+    age = models.IntegerField(
+        verbose_name='Возраст студента',
+    )
+    gpa = models.FloatField(
+        verbose_name='Среднее значение GPA'
     )
 
-    def __str__ (self) -> str:
-        return 'Студент: {0} / {1} / {2}' . format(
+    def __str__(self) -> str:
+        return 'Студент: {0} / {1} / {2}'.format(
             self.account.full_name,
             self.age,
             self.gpa,
         )
 
-    def safe(
+    def save(
         self,
-        *args:tuple,
+        *args: tuple,
         **kwargs: dict
     ) -> None:
         if self.age > self.MAX_AGE:
+            # v1
             # self.age = self.MAX_AGE
-            raise ValidationError (
-                'Допустимый возраст: {self.MAX_AGE}'
+
+            # v2
+            raise ValidationError(
+                f'Допустимый возраст: {self.MAX_AGE}'
             )
         super().save(*args, **kwargs)
 
     class Meta:
         ordering = (
-            'GPA',
+            'gpa',
         )
         verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
+
+
+class Professor(models.Model):
+    FULL_NAME_MAX_LENGTH = 20
+    TOPIC_MAX_LENGTH = 10
+
+    TOPIC_JAVA = 'java'
+    TOPIC_PYTHON = 'python'
+    TOPIC_TS = 'typescript'
+    TOPIC_JS = 'javascript'
+    TOPIC_RUBY = 'ruby'
+    TOPIC_GO = 'golang'
+    TOPIC_SQL = 'sql'
+    TOPIC_SWIFT = 'swift'
+    TOPIC_PHP = 'php'
+    TOPIC_DELPHI = 'deplhi'
+    TOPIC_PERL = 'perl'
+
+    TOPIC_CHOICES = (
+        (TOPIC_JAVA, 'Java'),
+        (TOPIC_PYTHON, 'Python'),
+        (TOPIC_TS, 'TypeScript'),
+        (TOPIC_JS, 'JavaScript'),
+        (TOPIC_RUBY, 'Ruby'),
+        (TOPIC_GO, 'GoLang'),
+        (TOPIC_SQL, 'SQL'),
+        (TOPIC_SWIFT, 'Swift'),
+        (TOPIC_PHP, 'PHP'),
+        (TOPIC_DELPHI, 'Deplhi'),
+        (TOPIC_PERL, 'Perl'),
+    )
+
+    full_name = models.CharField(
+        verbose_name='полное имя',
+        max_length=FULL_NAME_MAX_LENGTH
+    )
+    topic = models.CharField(
+        verbose_name='предмет',
+        max_length=TOPIC_MAX_LENGTH,
+        choices=TOPIC_CHOICES,
+        default=TOPIC_JAVA
+    )
+    students = models.ManyToManyField(
+        Student
+    )
+
+    def __str__(self) -> str:
+        return f'Профессор: {self.full_name} / Топик: {self.topic}'
+
+    def save(self, *args: tuple, **kwargs: dict) -> None:
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = (
+            'topic',
+        )
+        verbose_name = 'Профессор'
+        verbose_name_plural = 'Профессоры'

@@ -1,15 +1,12 @@
 from typing import Optional
-
-from django.core.handlers.wsgi import WSGIRequest
 from django.contrib import admin
-
-from . models import Account 
-from. models import Group
-from. models import Student
-
+from django.core.handlers.wsgi import WSGIRequest
+from . models import Account
+from . models import Group
+from . models import Student
+from . models import Professor
 
 class AccountAdmin(admin.ModelAdmin):
-
     readonly_fields = ()
 
     def get_readonly_fields(
@@ -17,34 +14,42 @@ class AccountAdmin(admin.ModelAdmin):
         request: WSGIRequest,
         obj: Optional[Account] = None
     ) -> tuple:
-
         if obj:
             return self.readonly_fields + ('description',)
         return self.readonly_fields
 
+admin.site.register(
+    Account,AccountAdmin
+)
+
+
 class GroupAdmin(admin.ModelAdmin):
     readonly_fields = ()
-  
 
-class StudentAdmin(admin.ModelAdmin):
-    STUDENT_EDIT_MAX_AGE = 16
-
-    readonly_fields = ()
-
-    def student_age_validation(
+    def get_readonly_fields(
         self,
-        obj:Student
+        request: WSGIRequest,
+        obj: Optional[Account] = None
     ) -> tuple:
-        if obj and obj.age <= self.STUDENT_EDIT_MAX_AGE:
-            return self.readonly_fields + ('age',)
+        if obj:
+            return self.readonly_fields + ('name',)
         return self.readonly_fields
 
 
-    def student_age_validation_2(
+admin.site.register(
+    Group, GroupAdmin
+    )
+
+
+class StudentAdmin(admin.ModelAdmin):
+    readonly_fields = ()
+    STUDENT_MAX_AGE = 16
+
+    def student_age_validation(
         self,
-        obj:Student
-    ) -> bool:
-        if obj and obj.age <= self.STUDENT_EDIT_MAX_AGE:
+        obj: Optional[Student]
+    ) -> tuple:
+        if obj and obj.age <= self.STUDENT_MAX_AGE:
             return True
         return False
 
@@ -54,16 +59,19 @@ class StudentAdmin(admin.ModelAdmin):
         obj: Optional[Student] = None
     ) -> tuple:
 
-        result: tuple = self.student_age_validation(obj)
-        return result
+        result: bool = self.student_age_validation(obj)
+        if result:
+            return self.readonly_fields + ('age',)
+        return self.readonly_fields
 
-
-admin.site.register(
-    Account, AccountAdmin
-)
-admin.site.register(
-    Group, GroupAdmin
-)
 admin.site.register(
     Student, StudentAdmin
+    )
+
+
+class ProfessorAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(
+    Professor, ProfessorAdmin
 )
