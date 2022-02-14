@@ -1,3 +1,4 @@
+import random
 from typing import Any
 from datetime import datetime
 
@@ -15,9 +16,13 @@ from app1.models import (
 )
 
 class Command(BaseCommand):
-    help = 'Custom command for filling'
+    """Custom command for filling up database.
 
-    def __init__ (self, *args: tuple, kwargs: dict) -> None:
+    Test data only
+    """
+    help = 'Custom command for filling up database.'
+
+    def init(self, *args: tuple, **kwargs: dict) -> None:
         pass
 
     def _generate_groups(self) -> None:
@@ -33,7 +38,7 @@ class Command(BaseCommand):
                 name=name
             )
 
-    def handle(self, *args: tuple, kwargs: dict) -> None:
+    def handle(self, *args: tuple, **kwargs: dict) -> None:
         """Handles data filling."""
 
         start: datetime = datetime.now()

@@ -6,6 +6,8 @@ from . models import Group
 from . models import Student
 from . models import Professor
 
+
+
 class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ()
 
@@ -42,8 +44,17 @@ admin.site.register(
 
 
 class StudentAdmin(admin.ModelAdmin):
-    readonly_fields = ()
     STUDENT_MAX_AGE = 16
+
+    readonly_fields = (    
+    )
+    list_filter = (
+        'age',
+        'gpa',
+    )
+    search_fields = (
+        'account',
+    )
 
     def student_age_validation(
         self,
@@ -62,6 +73,12 @@ class StudentAdmin(admin.ModelAdmin):
         result: bool = self.student_age_validation(obj)
         if result:
             return self.readonly_fields + ('age',)
+        return self.readonly_fields
+
+        age_condition:bool = obj.age <= self.STUDENT_MAX_AGE
+        if obj and age_condition:
+            return self.readonly_fields + ('age',)
+
         return self.readonly_fields
 
 admin.site.register(
