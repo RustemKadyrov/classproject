@@ -5,15 +5,19 @@ from datetime import (
 from django.db import (
     models,
 )
-from django.db.models import (
-    QuerySet,
-)
+# from django.db.models import (
+#     QuerySet,
+# )
 from django.core.exceptions import(
     ValidationError,
 )
 from django.contrib.auth.models import User
 
-from abstracts.models import AbstarctDateTime
+from abstract.models import AbstractDateTime
+
+from django.db.models import (
+    QuerySet,
+)
 
 
 class AccountQuerySet(QuerySet):
@@ -24,7 +28,7 @@ class AccountQuerySet(QuerySet):
         )
 
 
-class Account(AbstarctDateTime):
+class Account(AbstractDateTime):
 
     ACCOUNT_FULL_NAME_MAX_LENGTH = 20
 
@@ -57,17 +61,18 @@ class GroupQuerySet(QuerySet):
 
     def get_students_with_high_gpa(self) -> QuerySet:
         return self.filter(
-            student__gpa=HIGH_GPA_LEVEL
+            student__gpa = self.HIGH_GPA_LEVEL
         )
 
 
 
-class Group(AbstarctDateTime):
+class Group(AbstractDateTime):
     GROUP_NAME_MAX_LENGTH = 10
 
     name = models.CharField(
         max_length = GROUP_NAME_MAX_LENGTH
     )
+    objects = GroupQuerySet().as_manager()
     def __str__(self) -> str:
         return f'Group: {self.name}'
 
@@ -88,7 +93,7 @@ class StudentQuerySet(QuerySet):
         )
 
 
-class Student(AbstarctDateTime):
+class Student(AbstractDateTime):
     MAX_AGE = 27
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE
@@ -141,7 +146,7 @@ class Student(AbstarctDateTime):
         verbose_name_plural = 'Стундеты'
 
 
-class Professor(AbstarctDateTime):
+class Professor(AbstractDateTime):
     FULL_NAME_MAX_LENGTH = 20
 
     TOPIC_JAVA = 'java'

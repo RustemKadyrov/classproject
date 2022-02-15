@@ -6,10 +6,13 @@ from . models import Group
 from . models import Student
 from . models import Professor
 
-
-
 class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ()
+    readonly_fields = (
+        'datetime-created',
+        'datetime_updated',
+        'datetime_deleted',
+    )
 
     def get_readonly_fields(
         self,
@@ -20,41 +23,39 @@ class AccountAdmin(admin.ModelAdmin):
             return self.readonly_fields + ('description',)
         return self.readonly_fields
 
-admin.site.register(
-    Account,AccountAdmin
-)
+
+class GroupAdmin(admin.ModelAdmin):
+    readonly_fields = (
+        'Group.datetime_created'
+        'Group.datetime_deleted'
+        'datetime_created',
+        'datetime_update',
+        'datetime_deleted',
+        )
 
 
 class GroupAdmin(admin.ModelAdmin):
-    readonly_fields = ()
-
-    def get_readonly_fields(
-        self,
-        request: WSGIRequest,
-        obj: Optional[Account] = None
-    ) -> tuple:
-        if obj:
-            return self.readonly_fields + ('name',)
-        return self.readonly_fields
-
-
-admin.site.register(
-    Group, GroupAdmin
-    )
-
+    readonly_fields=()
 
 class StudentAdmin(admin.ModelAdmin):
-    STUDENT_MAX_AGE = 16
-
-    readonly_fields = (    
-    )
+    readonly_fields = ()
+    readonly_fields = (
+        'datetime_created',
+        'datetime_updated',
+        'datetime_deleted',
+        )
     list_filter = (
         'age',
         'gpa',
     )
-    search_fields = (
-        'account',
+    search_filter = (
+        'account_full_name',
     )
+    list_display = (
+        'age',
+        'gpa',
+    )
+    STUDENT_MAX_AGE = 16
 
     def student_age_validation(
         self,
@@ -75,19 +76,20 @@ class StudentAdmin(admin.ModelAdmin):
             return self.readonly_fields + ('age',)
         return self.readonly_fields
 
-        age_condition:bool = obj.age <= self.STUDENT_MAX_AGE
-        if obj and age_condition:
-            return self.readonly_fields + ('age',)
+class ProfessorAdmin(admin.ModelAdmin):
+    pass
 
-        return self.readonly_fields
+admin.site.register(
+    Account,AccountAdmin
+)
+
+admin.site.register(
+    Group, GroupAdmin
+    )
 
 admin.site.register(
     Student, StudentAdmin
     )
-
-
-class ProfessorAdmin(admin.ModelAdmin):
-    pass
 
 admin.site.register(
     Professor, ProfessorAdmin

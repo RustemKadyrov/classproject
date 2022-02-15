@@ -1,10 +1,8 @@
 from django.db import models
-from django.core.exceptions import (
-    ValidationError,
-)
-from django.contrib.auth.models import User
 
-class DateTimeCustom(models.Model):
+from apps import abstract
+
+class AbstractDateTime(models.Model):
 
     datetime_created = models.DateTimeField(
         verbose_name='Время создания',
@@ -19,3 +17,6 @@ class DateTimeCustom(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        abstract=True
