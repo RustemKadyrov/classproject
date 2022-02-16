@@ -7,9 +7,8 @@ from . models import Student
 from . models import Professor
 
 class AccountAdmin(admin.ModelAdmin):
-    readonly_fields = ()
     readonly_fields = (
-        'datetime-created',
+        'datetime_created',
         'datetime_updated',
         'datetime_deleted',
     )
