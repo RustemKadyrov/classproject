@@ -37,7 +37,8 @@ class GroupAdmin(admin.ModelAdmin):
     readonly_fields=()
 
 class StudentAdmin(admin.ModelAdmin):
-    readonly_fields = ()
+
+    MAX_STUDENT_EDITABLE_AGE = 18
     readonly_fields = (
         'datetime_created',
         'datetime_updated',

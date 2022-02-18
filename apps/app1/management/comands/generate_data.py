@@ -38,12 +38,23 @@ class Command(BaseCommand):
                 name=name
             )
 
+    def _generate_accounts_and_students(self) -> None:
+        """Generate Account and Student objs."""
+        pass
+
+    def _generate_professors(self) -> None:
+        """Generate Professor objs."""
+        pass
+
     def handle(self, *args: tuple, **kwargs: dict) -> None:
         """Handles data filling."""
 
         start: datetime = datetime.now()
 
         self._generate_groups()
+        self._generate_accounts_and_students()
+        self._generate_professors()
+
 
         print(
             'Generating Data: {} seconds'.format(
