@@ -1,10 +1,22 @@
-<!doctype html>
-<html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <title>Главная страница</title>
-    </head>
-    <body>
+{% extends 'base.html' %}
 
-    </body>
-</html>
+{% block title %}{{ ctx_title }}{% endblock %}
+
+{% block content %}
+    <h1>Текст на главной</h1>
+
+    {% include 'additional.html' %}
+    {% include 'additional.html' %}
+    {% include 'additional.html' %}
+
+    {% for user in ctx_users %}
+        <div class="alert alert-error mt-2">
+            <p>{{user.username}}</p>
+            <p>{{user.email}}</p>
+            <P>{{user.first_name}}</P>
+            <p>{{user.last_name}}</p>
+            <hr>
+        </div>
+    {% endfor %}
+
+{% endblock %}
