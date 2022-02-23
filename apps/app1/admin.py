@@ -1,6 +1,7 @@
 from typing import Optional
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpRequest
 from . models import Account
 from . models import Group
 from . models import Student
@@ -34,7 +35,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class GroupAdmin(admin.ModelAdmin):
-    readonly_fields=()
+    pass
 
 class StudentAdmin(admin.ModelAdmin):
 

@@ -4,7 +4,10 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import render
 
-from .models import Account, Student
+from .models import (
+    Account, 
+    Student,
+)
 
 from multiprocessing import context
 
@@ -39,5 +42,32 @@ def index_3(request: WSGIRequest) -> HttpResponse:
     return render(
         request,
         'index.html',
+        context
+    )
+
+def admin_page(request: WSGIRequest) -> HttpResponse:
+    users: QuerySet = User.objects.all()
+    context: dict = {
+        'ctx_title': 'Страница администратора',
+        'users': users 
+   
+    }
+    return render(
+        request,
+        'admin_page.html',
+        context
+    )
+
+
+def show(request: WSGIRequest) -> HttpResponse:
+    users: QuerySet = User.objects.all()
+    context: dict = {
+        'ctx_title': 'Дополнительная страница',
+        'ctx_users': users 
+   
+    }
+    return render(
+        request,
+        'show.html',
         context
     )

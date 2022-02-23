@@ -1,7 +1,5 @@
 from django.db import models
 
-from apps import abstract
-
 class AbstractDateTime(models.Model):
 
     datetime_created = models.DateTimeField(

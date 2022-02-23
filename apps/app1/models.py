@@ -5,19 +5,19 @@ from datetime import (
 from django.db import (
     models,
 )
-# from django.db.models import (
-#     QuerySet,
-# )
-from django.core.exceptions import(
-    ValidationError,
-)
-from django.contrib.auth.models import User
-
-from abstract.models import AbstractDateTime
-
 from django.db.models import (
     QuerySet,
 )
+from django.contrib.auth.models import (
+    User,
+)
+from django.core.exceptions import (
+    ValidationError,
+)
+
+from django.contrib.auth.models import User
+
+from abstract.models import AbstractDateTime
 
 
 class AccountQuerySet(QuerySet):
