@@ -8,14 +8,15 @@ from django.db import (
 from django.db.models import (
     QuerySet,
 )
-from django.contrib.auth.models import (
-    User,
-)
+# from django.contrib.auth.models import (
+#     User,
+# )
 from django.core.exceptions import (
     ValidationError,
 )
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from auths.models import CustomUser
 
 from abstract.models import AbstractDateTime
 
@@ -32,8 +33,8 @@ class Account(AbstractDateTime):
 
     ACCOUNT_FULL_NAME_MAX_LENGTH = 20
 
-    user = models.OneToOneField(
-        User,
+    CustomUser = models.OneToOneField(
+        CustomUser,
         on_delete = models.CASCADE
     )
     full_name = models.CharField(

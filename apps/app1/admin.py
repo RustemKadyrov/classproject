@@ -6,6 +6,7 @@ from . models import Account
 from . models import Group
 from . models import Student
 from . models import Professor
+from auths.models import CustomUser
 
 class AccountAdmin(admin.ModelAdmin):
     readonly_fields = (

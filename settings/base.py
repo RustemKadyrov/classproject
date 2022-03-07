@@ -1,8 +1,10 @@
 import os
 import sys
 from pathlib import Path
+from .import get_env_variable
+# from settings.conf import 
 
-
+AUTH_USER_MODEL = 'auths.CustomUser'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, 'apps'))
@@ -12,7 +14,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 ROOT_URLCONF = 'urls.urls'
 
-SECRET_KEY = '@1s5i)b=b9=&-ixt7@gf5%5t&uu1*znu*z98++jorx3&d&x4&&'
+SECRET_KEY = get_env_variable('SECRET_KEY') 
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -31,8 +33,10 @@ DJANGO_AND_THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'app1.apps.App1Config',
     'abstract.apps.AbstractConfig',
+    'auths.apps.AuthsConfig',
 ]
 INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
+
 
 DATABASES = {
     'default': {
@@ -86,8 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 # Custom constants
 #
-ADMIN_SITE_URL = 'custom_admin/'
-
+# ADMIN_SITE_URL = 'custom_admin/'
 
 LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'Asia/Almaty'

@@ -159,11 +159,6 @@ class Command(BaseCommand):
         start: datetime = datetime.now()  # Получаем время в начале срабатывания кода, чтобы высчитать разницу
 
         self._generate_users()
-        # self._generate_groups() # Генерируем данные
-        # self._generate_users_accounts_students()
-        # self._generate_professors()
-
-        # Выдаем время генерации данных
         print(
             'Generating Data: {} seconds'.format(
                 (datetime.now()-start).total_seconds()
