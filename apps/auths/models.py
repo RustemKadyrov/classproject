@@ -1,23 +1,21 @@
-from django.utils import timezone
-from datetime import datetime
-import email
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 
+
 class CustomUserManager(BaseUserManager):
-    
+
     def create_user(
         self,
         email: str,
-        password: str, 
-        **kwargs: dict
+        password: str
     ) -> 'CustomUser':
-        
+
         if not email:
             raise ValidationError('Email required')
 
@@ -32,8 +30,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(
         self,
         email: str,
-        password: str,
-        **kwargs: dict
+        password: str
     ) -> 'CustomUser':
 
         user: 'CustomUser' = self.model(
@@ -45,20 +42,16 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
 
 
-class CustomUser(AbstractBaseUser,PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
-        'Почта/Логин',unique=True
+        'Почта/Логин', unique=True
     )
-    is_active = models.BooleanField(default=True)
-    datetime_joined = models.DateTimeField(default=timezone.now)
-    is_root = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    datetime_joined = models.DateTimeField(
-        verbose_name='Время регистрации',
-        auto_now=True
+    is_active = models.BooleanField('Активность', default=True)
+    is_staff = models.BooleanField('Статус менеджера', default=False)
+    date_joined = models.DateTimeField(
+        'Дата регистрации', default=timezone.now
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -67,15 +60,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     class Meta:
         ordering = (
-            'email',
+            'date_joined',
         )
-        verbose_name = 'Почта/Логин'
-        verbose_name_plural = 'Почты/Логины'
-
-    # def save(self,*args,**kwargs) ->None:
-    #     if(self.email != self.email.lower()):
-    #         raise ValidationError (
-    #             'Ваш email "%(email)%" должен быть в написан маленькими буквами',
-    #             code = 'lower.case.email_error',
-    #             params= ('email': self.email)
-    #     super().save(*args,**kwargs)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'

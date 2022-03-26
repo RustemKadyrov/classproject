@@ -8,6 +8,7 @@ from . models import Student
 from . models import Professor
 from auths.models import CustomUser
 
+
 class AccountAdmin(admin.ModelAdmin):
     readonly_fields = (
         'datetime_created',
@@ -37,6 +38,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 class GroupAdmin(admin.ModelAdmin):
     pass
+
 
 class StudentAdmin(admin.ModelAdmin):
 
@@ -77,6 +79,7 @@ class StudentAdmin(admin.ModelAdmin):
         if result:
             return self.readonly_fields + ('age',)
         return self.readonly_fields
+
 
 class ProfessorAdmin(admin.ModelAdmin):
     pass

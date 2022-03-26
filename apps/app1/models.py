@@ -1,6 +1,10 @@
 from datetime import (
+    date,
     datetime,
 )
+from distutils.command.upload import upload
+from email.policy import default
+from tabnanny import verbose
 
 from django.db import (
     models,
@@ -66,7 +70,6 @@ class GroupQuerySet(QuerySet):
         )
 
 
-
 class Group(AbstractDateTime):
     GROUP_NAME_MAX_LENGTH = 10
 
@@ -94,6 +97,80 @@ class StudentQuerySet(QuerySet):
         )
 
 
+class HomeworkQuerySet(QuerySet):
+
+    def get_not_deleted(self) -> QuerySet:
+        return self.filter(
+            datetime_deleted__isnull=True
+        )
+
+
+class Homework(AbstractDateTime):
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.PROTECT
+    )
+    title = models.CharField(max_length=100)
+    subject = models.CharField(max_length=50)
+    logo = models.ImageField(
+        'Лого домашней работы',
+        upload_to='homework/',
+        max_length=255
+    )
+    checked = models.BooleanField(default=False)
+    
+    objects = HomeworkQuerySet().as_manager()
+
+    def __str__(self) -> str:
+        return f'{self.subject} | {self.title}'
+
+    def cheked_file(self) -> QuerySet:
+        return self.filter(
+            cheked_file=True
+        )
+
+
+    class Meta:
+        ordering = (
+            '-datetime_created',
+        )
+        verbose_name = 'Домашняя работа'
+        verbose_name_plural = 'Домашние работы'
+
+
+class FileQuerySet(QuerySet):
+    MIN_SIZE = 10
+
+    def get_file(self) -> QuerySet:
+        return self.filter(
+            file_get=self.MIN_SIZE
+        )
+
+
+class File(AbstractDateTime):
+    homework = models.ForeignKey(
+        Homework, on_delete=models.PROTECT
+    )
+    title = models.CharField(max_length=100)
+    obj = models.FileField(
+        'Объем файла',
+        upload_to = 'homework_files/%Y/%m/%d/',
+        max_length=255
+    )
+    file = models.FileField(upload_to=None,max_length=100)
+
+    objects = FileQuerySet().as_manager()
+
+    def __str__(self) -> str:
+        return f'{self.homework} | {self.title}'
+
+    class Meta:
+        ordering = (
+            'datetime_created',
+        )
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'
+        
+
 class Student(AbstractDateTime):
     MAX_AGE = 27
     account = models.ForeignKey(
@@ -107,6 +184,9 @@ class Student(AbstractDateTime):
     )
     group = models.ForeignKey(
         Group, on_delete=models.PROTECT
+    )
+    homework = models.ForeignKey(
+        Homework, on_delete=models.CASCADE
     )
     objects = StudentQuerySet().as_manager()
 
@@ -207,3 +287,6 @@ class Professor(AbstractDateTime):
         )
         verbose_name = 'Преподователь'
         verbose_name_plural = 'Преподователи'
+
+
+

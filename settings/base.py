@@ -4,18 +4,27 @@ from pathlib import Path
 from .import get_env_variable
 # from settings.conf import 
 
+
 AUTH_USER_MODEL = 'auths.CustomUser'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, 'apps'))
 
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 ROOT_URLCONF = 'urls.urls'
+
 
 SECRET_KEY = get_env_variable('SECRET_KEY') 
 DEBUG = True
+
 
 ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'settings.wsgi.application'
@@ -30,11 +39,15 @@ DJANGO_AND_THIRD_PARTY_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
 ]
+
+
 PROJECT_APPS = [
     'app1.apps.App1Config',
     'abstract.apps.AbstractConfig',
     'auths.apps.AuthsConfig',
 ]
+
+
 INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
 
 
@@ -44,6 +57,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -55,9 +70,11 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
+
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
 
 TEMPLATES = [
     {
@@ -74,6 +91,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -88,15 +107,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 # Custom constants
 #
 # ADMIN_SITE_URL = 'custom_admin/'
+
 
 LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'Asia/Almaty'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
 
 # STATIC_URL = '/static/'
 ADMIN_SITE_URL = '12345'
