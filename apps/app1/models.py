@@ -88,15 +88,6 @@ class Group(AbstractDateTime):
         verbose_name_plural = 'Группы'
 
 
-class StudentQuerySet(QuerySet):
-    ADULT_AGE = 18
-
-    def get_adult_student(self) -> QuerySet:
-        return self.filter(
-            age__gte=self.ADULT_AGE
-        )
-
-
 class HomeworkQuerySet(QuerySet):
 
     def get_not_deleted(self) -> QuerySet:
@@ -106,28 +97,38 @@ class HomeworkQuerySet(QuerySet):
 
 
 class Homework(AbstractDateTime):
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.PROTECT
+
+    IMAGE_TYPES = (
+        'png',
+        'jpg',
+        'jpeg',
     )
-    title = models.CharField(max_length=100)
-    subject = models.CharField(max_length=50)
+    user = models.ForeignKey(
+        CustomUser,
+        verbose_name='загрузчик',
+        on_delete=models.PROTECT
+    )
+    title = models.CharField(
+        verbose_name='заголовок',
+        max_length=100
+    )
+    subject = models.CharField(
+        verbose_name='топик',
+        max_length=50
+    )
     logo = models.ImageField(
-        'Лого домашней работы',
+        verbose_name='Лого домашней работы',
         upload_to='homework/',
         max_length=255
-    )
-    checked = models.BooleanField(default=False)
-    
+    ) 
     objects = HomeworkQuerySet().as_manager()
 
     def __str__(self) -> str:
         return f'{self.subject} | {self.title}'
 
-    def cheked_file(self) -> QuerySet:
-        return self.filter(
-            cheked_file=True
-        )
-
+    @property
+    def is_cheked_file(self) -> bool:
+        return self._foo
 
     class Meta:
         ordering = (
@@ -137,39 +138,14 @@ class Homework(AbstractDateTime):
         verbose_name_plural = 'Домашние работы'
 
 
-class FileQuerySet(QuerySet):
-    MIN_SIZE = 10
+class StudentQuerySet(QuerySet):
+    ADULT_AGE = 18
 
-    def get_file(self) -> QuerySet:
+    def get_adult_student(self) -> QuerySet:
         return self.filter(
-            file_get=self.MIN_SIZE
+            age__gte=self.ADULT_AGE
         )
 
-
-class File(AbstractDateTime):
-    homework = models.ForeignKey(
-        Homework, on_delete=models.PROTECT
-    )
-    title = models.CharField(max_length=100)
-    obj = models.FileField(
-        'Объем файла',
-        upload_to = 'homework_files/%Y/%m/%d/',
-        max_length=255
-    )
-    file = models.FileField(upload_to=None,max_length=100)
-
-    objects = FileQuerySet().as_manager()
-
-    def __str__(self) -> str:
-        return f'{self.homework} | {self.title}'
-
-    class Meta:
-        ordering = (
-            'datetime_created',
-        )
-        verbose_name = 'Файл'
-        verbose_name_plural = 'Файлы'
-        
 
 class Student(AbstractDateTime):
     MAX_AGE = 27
@@ -289,4 +265,45 @@ class Professor(AbstractDateTime):
         verbose_name_plural = 'Преподователи'
 
 
+class FileQuerySet(QuerySet):
+    MIN_SIZE = 10
 
+    def get_file(self) -> QuerySet:
+        return self.filter(
+            file_get=self.MIN_SIZE
+        )
+
+
+class File(AbstractDateTime):
+
+    FILE_TYPES = (
+        'txt',
+        'pdf',
+    )
+    homework = models.ForeignKey(
+        Homework,
+        verbose_name='домашняя работа',
+        on_delete= models.PROTECT
+    )
+    title = models.CharField(max_length=100)
+    obj = models.FileField(
+        verbose_name='Объем файла',
+        upload_to = 'homework_files/%Y/%m/%d/',
+        max_length=255
+    )
+    is_checked = models.BooleanField(
+        verbose_name='проверена ли',
+        default=False
+    )
+    objects = FileQuerySet().as_manager()
+
+    def __str__(self) -> str:
+        return f'{self.homework.title} | {self.title}'
+
+    class Meta:
+        ordering = (
+            'datetime_created',
+        )
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'
+        

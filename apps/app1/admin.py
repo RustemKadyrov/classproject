@@ -6,6 +6,8 @@ from . models import Account
 from . models import Group
 from . models import Student
 from . models import Professor
+from . models import Homework
+from . models import File
 from auths.models import CustomUser
 
 
@@ -84,6 +86,30 @@ class StudentAdmin(admin.ModelAdmin):
 class ProfessorAdmin(admin.ModelAdmin):
     pass
 
+class HomeworkAdmin(admin.ModelAdmin):
+    pass
+
+class FileAdmin(admin.ModelAdmin):
+    readonly_fields = (
+        'datetime_created',
+        'datetime_updated',
+        'datetime_deleted',
+    )
+    def get_readonly_fields(
+        self, 
+        request: WSGIRequest, 
+        obj: Optional[Student] = None
+    ) -> tuple:
+        if not obj:
+            return self.readonly_fields
+
+        return self.readonly_fields + (
+            'homework',
+            'title',
+            'obj',
+            'is_checked'
+        )
+
 admin.site.register(
     Account,AccountAdmin
 )
@@ -98,4 +124,12 @@ admin.site.register(
 
 admin.site.register(
     Professor, ProfessorAdmin
+)
+
+admin.site.register(
+    Homework, HomeworkAdmin
+)
+
+admin.site.register(
+    File, FileAdmin
 )

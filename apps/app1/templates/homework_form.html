@@ -1,0 +1,41 @@
+{% extends 'visitor.html' %}
+{% block title %}Логин{% endblock %}
+{% block login active %}active{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Домашняя работа</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <form class="form-horizontal" role="form" action="[% url 'page_create_html %']" method="post" enctype="multipart/form-data">
+
+                        {% csrf_token %}
+                        {% include 'form_template.html' %}
+                        {{ form.as_p }}
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Зарегистрировать</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Нет аккаунта</h3>
+                    <h3>Перейти к регистрации</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
